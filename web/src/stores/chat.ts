@@ -45,15 +45,20 @@ export const useChatStore = defineStore('chat', () => {
     const content = text.trim()
     if ((!content && !attachments.length) || isWaiting.value) return
 
+    // Earlier turns give the AI context (errors excluded, last 20 messages).
+    const history = messages.value
+      .filter((m) => m.status !== 'error' && m.content)
+      .slice(-20)
+      .map(({ role, content }) => ({ role, content }))
+
     addMessage({ role: 'user', content, attachments })
+
+    // The AI only sees file names for now, not file contents.
+    const fileNote = attachments.length ? `\n(Attached: ${attachments.map((a) => a.name).join(', ')})` : ''
 
     const requestSession = sessionId.value
     await withWaiting(async () => {
-      const res = await sendMessage(content, {
-        sessionId: requestSession,
-        mode: mode.value,
-        attachments: attachments.flatMap((a) => (a.file ? [a.file] : [])),
-      })
+      const res = await sendMessage(content + fileNote, { mode: mode.value, history })
       if (requestSession !== sessionId.value) return
       addMessage({ role: 'assistant', content: res.reply, suggestions: res.suggestions, form: res.form })
     })
@@ -67,7 +72,7 @@ export const useChatStore = defineStore('chat', () => {
     const requestSession = sessionId.value
     await withWaiting(
       async () => {
-        const res = await submitApplication(form, requestSession)
+        const res = await submitApplication(form)
         if (requestSession !== sessionId.value) return
         message.form = { ...form, status: 'submitted', reference: res.reference }
         addMessage({ role: 'assistant', content: res.reply })
