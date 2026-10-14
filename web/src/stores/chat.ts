@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { sendMessage } from '@/api/client'
+import { sendMessage, submitApplication } from '@/api/client'
+import type { ApplicationForm } from '@/types/application'
 import type { ChatAttachment, ChatMessage, ChatMode } from '@/types/chat'
 import { createId } from '@/utils/id'
 
@@ -12,47 +13,67 @@ export const useChatStore = defineStore('chat', () => {
 
   const hasMessages = computed(() => messages.value.length > 0)
 
+  function addMessage(message: Omit<ChatMessage, 'id' | 'createdAt'>) {
+    messages.value.push({ id: createId(), createdAt: Date.now(), ...message })
+  }
+
+  function addError(err: unknown) {
+    addMessage({
+      role: 'assistant',
+      content: err instanceof Error ? err.message : 'Something went wrong. Please try again.',
+      status: 'error',
+    })
+  }
+
+  // Runs a request while showing the waiting state; drops the result if the thread was reset meanwhile.
+  async function withWaiting(request: () => Promise<void>, onError?: () => void) {
+    isWaiting.value = true
+    const requestSession = sessionId.value
+    const isCurrent = () => requestSession === sessionId.value
+    try {
+      await request()
+    } catch (err) {
+      if (!isCurrent()) return
+      onError?.()
+      addError(err)
+    } finally {
+      if (isCurrent()) isWaiting.value = false
+    }
+  }
+
   async function send(text: string, attachments: ChatAttachment[] = []) {
     const content = text.trim()
     if ((!content && !attachments.length) || isWaiting.value) return
 
-    messages.value.push({
-      id: createId(),
-      role: 'user',
-      content,
-      attachments,
-      createdAt: Date.now(),
-    })
+    addMessage({ role: 'user', content, attachments })
 
-    isWaiting.value = true
     const requestSession = sessionId.value
-    try {
+    await withWaiting(async () => {
       const res = await sendMessage(content, {
         sessionId: requestSession,
         mode: mode.value,
         attachments: attachments.flatMap((a) => (a.file ? [a.file] : [])),
       })
-      // Ignore replies for a thread that was reset while waiting.
       if (requestSession !== sessionId.value) return
-      messages.value.push({
-        id: createId(),
-        role: 'assistant',
-        content: res.reply,
-        suggestions: res.suggestions,
-        createdAt: Date.now(),
-      })
-    } catch (err) {
-      if (requestSession !== sessionId.value) return
-      messages.value.push({
-        id: createId(),
-        role: 'assistant',
-        content: err instanceof Error ? err.message : 'Something went wrong. Please try again.',
-        status: 'error',
-        createdAt: Date.now(),
-      })
-    } finally {
-      if (requestSession === sessionId.value) isWaiting.value = false
-    }
+      addMessage({ role: 'assistant', content: res.reply, suggestions: res.suggestions, form: res.form })
+    })
+  }
+
+  async function submitForm(messageId: string, form: ApplicationForm) {
+    const message = messages.value.find((m) => m.id === messageId)
+    if (!message?.form || isWaiting.value) return
+
+    message.form = { ...form, status: 'submitting' }
+    const requestSession = sessionId.value
+    await withWaiting(
+      async () => {
+        const res = await submitApplication(form, requestSession)
+        if (requestSession !== sessionId.value) return
+        message.form = { ...form, status: 'submitted', reference: res.reference }
+        addMessage({ role: 'assistant', content: res.reply })
+      },
+      () => (message.form = { ...form, status: 'draft' }),
+    )
   }
 
   function newThread() {
@@ -61,5 +82,5 @@ export const useChatStore = defineStore('chat', () => {
     sessionId.value = createId()
   }
 
-  return { messages, isWaiting, mode, sessionId, hasMessages, send, newThread }
+  return { messages, isWaiting, mode, sessionId, hasMessages, send, submitForm, newThread }
 })

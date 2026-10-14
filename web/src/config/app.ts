@@ -29,7 +29,7 @@ export const MODES: ModeOption[] = [
     label: 'Get it done',
     icon: 'clipboard-check',
     placeholder: 'Tell me what to take care of, e.g. "register my new address"...',
-    hint: 'Nothing is submitted until you review it and confirm with ID Austria.',
+    hint: 'Nothing is submitted until you press "Sign & apply". It signs with your ID Austria.',
   },
 ]
 
@@ -41,6 +41,7 @@ export interface Topic {
 
 // Common life events in Austria, from a citizen's point of view.
 export const TOPICS: Topic[] = [
+  { label: 'Student visa', icon: 'id-card', prompt: 'How do I renew my student visa?' },
   { label: 'Moving', icon: 'house', prompt: 'I moved. Please register my new main residence (Meldezettel).' },
   { label: 'New baby', icon: 'users', prompt: 'We had a baby. Apply for Familienbeihilfe and Kinderbetreuungsgeld for me.' },
   { label: 'Passport & ID', icon: 'id-card', prompt: 'My Reisepass expires soon. Help me renew it.' },

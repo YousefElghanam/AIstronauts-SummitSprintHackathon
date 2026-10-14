@@ -3,9 +3,12 @@ import { ref } from 'vue'
 import AppIcon from '@/components/ui/AppIcon.vue'
 import BrandLogo from '@/components/ui/BrandLogo.vue'
 import AttachmentChip from './AttachmentChip.vue'
+import ApplicationFormCard from './ApplicationFormCard.vue'
+import type { ApplicationForm } from '@/types/application'
 import type { ChatMessage } from '@/types/chat'
 
 const props = defineProps<{ message: ChatMessage }>()
+const emit = defineEmits<{ submitForm: [form: ApplicationForm] }>()
 
 const copied = ref(false)
 async function copy() {
@@ -44,6 +47,7 @@ async function copy() {
         <AppIcon v-if="message.status === 'error'" name="alert" :size="16" />
         {{ message.content }}
       </p>
+      <ApplicationFormCard v-if="message.form" :form="message.form" @submit="emit('submitForm', $event)" />
       <div v-if="message.status !== 'error'" class="mt-1 flex gap-1">
         <button
           type="button"

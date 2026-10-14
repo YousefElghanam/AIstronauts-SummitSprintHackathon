@@ -1,3 +1,5 @@
+import type { ApplicationForm } from './application'
+
 export type ChatRole = 'user' | 'assistant'
 
 // ask: explain a public service · task: complete it on the user's behalf (ID Austria)
@@ -18,5 +20,6 @@ export interface ChatMessage {
   createdAt: number
   attachments?: ChatAttachment[]
   suggestions?: string[]
+  form?: ApplicationForm
   status?: 'error'
 }

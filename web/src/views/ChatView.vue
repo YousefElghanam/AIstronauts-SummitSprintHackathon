@@ -110,7 +110,12 @@ useKeyboardShortcut({ key: 'Escape' }, () => {
           <span class="text-base font-semibold text-ink">{{ APP_NAME }}</span>
         </div>
 
-        <ChatMessageList v-if="hasMessages" :messages="messages" :waiting="isWaiting" @suggest="chat.send($event)" />
+        <ChatMessageList
+          v-if="hasMessages"
+          :messages="messages"
+          :waiting="isWaiting" @suggest="chat.send($event)"
+          @submit-form="chat.submitForm"
+        />
 
         <div
           :class="
