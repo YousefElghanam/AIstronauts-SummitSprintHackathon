@@ -7,7 +7,7 @@ import { createId } from '@/utils/id'
 export const useChatStore = defineStore('chat', () => {
   const messages = ref<ChatMessage[]>([])
   const isWaiting = ref(false)
-  const mode = ref<ChatMode>('search')
+  const mode = ref<ChatMode>('ask')
   const sessionId = ref(createId())
 
   const hasMessages = computed(() => messages.value.length > 0)

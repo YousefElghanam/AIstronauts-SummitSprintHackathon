@@ -26,20 +26,20 @@ const label = computed(() => {
       @click="emit('close')"
     >
       <!-- Glow -->
-      <span class="absolute inset-2 rounded-full bg-blue-500/40 blur-2xl" />
+      <span class="absolute inset-2 rounded-full bg-brand/30 blur-2xl" />
 
       <!-- Cloud shape -->
-      <svg viewBox="0 0 24 20" class="relative size-full drop-shadow-[0_8px_24px_rgba(37,99,235,0.55)]" aria-hidden="true">
+      <svg viewBox="0 0 24 20" class="relative size-full drop-shadow-[0_8px_24px_rgba(200,16,46,0.4)]" aria-hidden="true">
         <defs>
           <linearGradient id="cloud-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#93c5fd" />
-            <stop offset="1" stop-color="#2563eb" />
+            <stop offset="0" stop-color="#ef5a70" />
+            <stop offset="1" stop-color="#c8102e" />
           </linearGradient>
         </defs>
         <path
           d="M17.5 17H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"
           fill="url(#cloud-fill)"
-          stroke="rgba(255,255,255,0.5)"
+          stroke="rgba(255,255,255,0.7)"
           stroke-width="0.4"
         />
       </svg>
@@ -51,7 +51,7 @@ const label = computed(() => {
     </button>
 
     <p
-      class="max-w-xs truncate rounded-full border border-white/10 bg-[#0a0d16]/80 px-3 py-1 text-xs text-slate-300 backdrop-blur"
+      class="max-w-xs truncate rounded-full border border-line bg-surface px-3 py-1 text-xs text-ink-muted shadow-sm"
       role="status"
       aria-live="polite"
     >

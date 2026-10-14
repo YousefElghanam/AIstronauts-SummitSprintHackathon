@@ -3,13 +3,15 @@ import type { ChatResponse } from './client'
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 const SUGGESTION_POOL = [
-  'What documents do I need to bring?',
-  'How long does the process take?',
-  'Can I do this online instead?',
-  'Is there a fee for this service?',
+  'Fill in the form for me',
+  'Sign and submit it with ID Austria',
+  'Which documents do I need to bring?',
+  'Can I do this online on oesterreich.gv.at?',
+  'Book an appointment at my Magistrat or Bezirkshauptmannschaft',
+  'What does it cost?',
   'What is the deadline?',
-  'Who can I contact if I get stuck?',
-  'Can someone else do this on my behalf?',
+  'Remind me before the deadline',
+  'Show the status of my application',
 ]
 
 function pickSuggestions(count: number): string[] {

@@ -6,6 +6,7 @@ import AttachmentChip from './AttachmentChip.vue'
 import ChatModeToggle from './ChatModeToggle.vue'
 import type { ChatAttachment, ChatMode } from '@/types/chat'
 import { createId } from '@/utils/id'
+import { MODES } from '@/config/app'
 
 const props = defineProps<{ busy?: boolean }>()
 const emit = defineEmits<{
@@ -20,6 +21,8 @@ const textarea = useTemplateRef<HTMLTextAreaElement>('textarea')
 const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
 const attachments = ref<ChatAttachment[]>([])
 const isDragging = ref(false)
+
+const placeholder = computed(() => MODES.find((m) => m.value === mode.value)?.placeholder ?? '')
 
 const canSend = computed(() => !props.busy && (draft.value.trim().length > 0 || attachments.value.length > 0))
 
@@ -77,8 +80,8 @@ defineExpose({ focus })
 
 <template>
   <form
-    class="w-full rounded-2xl border bg-[#0a0d16]/90 p-3 shadow-2xl shadow-black/40 backdrop-blur-xl transition"
-    :class="isDragging ? 'border-blue-400/70 ring-4 ring-blue-500/20' : 'border-white/10 focus-within:border-white/20'"
+    class="w-full rounded-2xl border bg-surface p-3 shadow-xl shadow-black/5 transition"
+    :class="isDragging ? 'border-brand/60 ring-4 ring-brand/15' : 'border-line focus-within:border-brand/50 focus-within:ring-4 focus-within:ring-brand/10'"
     @submit.prevent="submit"
     @dragover.prevent="isDragging = true"
     @dragleave.self="isDragging = false"
@@ -101,20 +104,20 @@ defineExpose({ focus })
       ref="textarea"
       v-model="draft"
       rows="2"
-      placeholder="Ask anything..."
-      class="block w-full resize-none bg-transparent px-1 text-sm leading-6 text-slate-100 placeholder:text-slate-500 focus:outline-none"
+      :placeholder="placeholder"
+      class="block w-full resize-none bg-transparent px-1 text-sm leading-6 text-ink placeholder:text-ink-subtle focus:outline-none"
       @keydown.enter.exact.prevent="submit"
     />
 
     <div class="mt-2 flex items-center justify-between gap-2">
       <ChatModeToggle v-model="mode" />
 
-      <div class="flex items-center gap-0.5 rounded-full bg-white/5 p-0.5">
-        <IconButton icon="paperclip" label="Attach files" @click="fileInput?.click()" />
+      <div class="flex items-center gap-0.5 rounded-full bg-canvas p-0.5">
+        <IconButton icon="paperclip" label="Attach documents" @click="fileInput?.click()" />
         <IconButton icon="mic" label="Voice mode" @click="emit('voice')" />
         <button
           type="submit"
-          class="ml-0.5 grid size-8 place-items-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:bg-blue-600/30 disabled:text-white/50 disabled:shadow-none"
+          class="ml-0.5 grid size-8 place-items-center rounded-full bg-brand text-white shadow-md shadow-brand/30 transition hover:bg-brand-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:bg-brand/25 disabled:text-white disabled:shadow-none"
           :disabled="!canSend"
           :aria-label="busy ? 'Waiting for answer' : 'Send message'"
         >

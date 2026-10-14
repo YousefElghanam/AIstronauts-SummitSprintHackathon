@@ -7,7 +7,7 @@ const greeting = useGreeting(USER_NAME)
 
 <template>
   <header class="text-center">
-    <h1 class="text-3xl font-medium tracking-tight text-white sm:text-5xl">{{ greeting }}</h1>
-    <p class="mt-2 text-2xl text-slate-400 sm:text-4xl">How can I help you today?</p>
+    <h1 class="text-3xl font-semibold tracking-tight text-ink sm:text-5xl">{{ greeting }}</h1>
+    <p class="mt-2 text-2xl text-ink-muted sm:text-4xl">How can I help you today?</p>
   </header>
 </template>

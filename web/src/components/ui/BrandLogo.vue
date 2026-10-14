@@ -1,17 +1,30 @@
 <script setup lang="ts">
+import { useId } from 'vue'
+
 withDefaults(defineProps<{ size?: number }>(), { size: 28 })
+
+// Unique clip id per instance (the logo appears many times on the page).
+const clipId = useId()
 </script>
 
 <template>
+  <!-- Original mark: speech bubble in red-white-red. Not an official emblem. -->
   <svg :width="size" :height="size" viewBox="0 0 32 32" aria-hidden="true" class="shrink-0">
     <defs>
-      <linearGradient id="brand-bg" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#60a5fa" />
-        <stop offset="1" stop-color="#1d4ed8" />
-      </linearGradient>
+      <clipPath :id="clipId">
+        <path d="M8 3h16a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6H14l-6.5 5v-5.3A6 6 0 0 1 2 19V9a6 6 0 0 1 6-6Z" />
+      </clipPath>
     </defs>
-    <rect width="32" height="32" rx="9" fill="url(#brand-bg)" />
-    <circle cx="16" cy="17" r="7.5" fill="none" stroke="#fff" stroke-width="2.2" opacity=".95" />
-    <circle cx="19.5" cy="13.5" r="3" fill="#fff" />
+    <g :clip-path="`url(#${clipId})`">
+      <rect width="32" height="11" fill="#c8102e" />
+      <rect y="11" width="32" height="6" fill="#ffffff" />
+      <rect y="17" width="32" height="15" fill="#c8102e" />
+    </g>
+    <path
+      d="M8 3h16a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6H14l-6.5 5v-5.3A6 6 0 0 1 2 19V9a6 6 0 0 1 6-6Z"
+      fill="none"
+      stroke="#a50d26"
+      stroke-width="1"
+    />
   </svg>
 </template>

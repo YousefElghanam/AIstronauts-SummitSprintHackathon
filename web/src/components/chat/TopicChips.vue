@@ -11,10 +11,10 @@ const emit = defineEmits<{ select: [topic: Topic] }>()
     <li v-for="topic in topics" :key="topic.label">
       <button
         type="button"
-        class="flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#0a0d16]/80 px-3 py-1.5 text-xs text-slate-200 backdrop-blur transition hover:-translate-y-0.5 hover:border-blue-400/40 hover:bg-blue-500/10"
+        class="flex items-center gap-1.5 rounded-lg border border-line bg-surface px-3 py-1.5 text-xs font-medium text-ink shadow-sm transition hover:-translate-y-0.5 hover:border-brand/40 hover:bg-brand-soft"
         @click="emit('select', topic)"
       >
-        <AppIcon :name="topic.icon" :size="13" class="text-blue-400" />
+        <AppIcon :name="topic.icon" :size="13" class="text-brand" />
         {{ topic.label }}
       </button>
     </li>

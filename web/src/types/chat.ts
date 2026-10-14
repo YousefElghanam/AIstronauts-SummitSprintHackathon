@@ -1,6 +1,7 @@
 export type ChatRole = 'user' | 'assistant'
 
-export type ChatMode = 'search' | 'research'
+// ask: explain a public service · task: complete it on the user's behalf (ID Austria)
+export type ChatMode = 'ask' | 'task'
 
 export interface ChatAttachment {
   id: string

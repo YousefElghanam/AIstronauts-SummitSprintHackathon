@@ -27,7 +27,7 @@ async function copy() {
     </div>
     <p
       v-if="message.content"
-      class="max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-blue-600/90 px-4 py-2.5 text-sm text-white shadow-lg shadow-blue-900/30"
+      class="max-w-[85%] whitespace-pre-wrap break-words rounded-2xl rounded-br-md bg-ink px-4 py-2.5 text-sm text-white shadow-md shadow-black/10"
     >
       {{ message.content }}
     </p>
@@ -39,7 +39,7 @@ async function copy() {
     <div class="min-w-0 flex-1">
       <p
         class="whitespace-pre-wrap break-words text-[15px] leading-7"
-        :class="message.status === 'error' ? 'flex items-center gap-2 text-red-300' : 'text-slate-100'"
+        :class="message.status === 'error' ? 'flex items-center gap-2 text-brand' : 'text-ink'"
       >
         <AppIcon v-if="message.status === 'error'" name="alert" :size="16" />
         {{ message.content }}
@@ -47,7 +47,7 @@ async function copy() {
       <div v-if="message.status !== 'error'" class="mt-1 flex gap-1">
         <button
           type="button"
-          class="flex items-center gap-1 rounded-md px-1.5 py-1 text-xs text-slate-500 transition hover:bg-white/5 hover:text-slate-200"
+          class="flex items-center gap-1 rounded-md px-1.5 py-1 text-xs text-ink-subtle transition hover:bg-black/5 hover:text-ink"
           @click="copy"
         >
           <AppIcon :name="copied ? 'check' : 'copy'" :size="13" />

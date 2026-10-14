@@ -2,8 +2,9 @@
 import { computed, nextTick, ref, useTemplateRef } from 'vue'
 import { storeToRefs } from 'pinia'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
-import StarfieldBackground from '@/components/ui/StarfieldBackground.vue'
+import AppBackground from '@/components/ui/AppBackground.vue'
 import AppIcon from '@/components/ui/AppIcon.vue'
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 import ChatWelcome from '@/components/chat/ChatWelcome.vue'
 import ChatComposer from '@/components/chat/ChatComposer.vue'
 import TopicChips from '@/components/chat/TopicChips.vue'
@@ -12,7 +13,7 @@ import VoiceListeningCloud from '@/components/chat/VoiceListeningCloud.vue'
 import { useChatStore } from '@/stores/chat'
 import { useSpeechRecognition } from '@/composables/useSpeechRecognition'
 import { useKeyboardShortcut } from '@/composables/useKeyboardShortcut'
-import { APP_NAME, TOPICS, type Topic } from '@/config/app'
+import { APP_NAME, MODES, TOPICS, type Topic } from '@/config/app'
 import type { ChatAttachment } from '@/types/chat'
 
 const chat = useChatStore()
@@ -36,6 +37,8 @@ function startNewThread() {
 function onSubmit({ text, attachments }: { text: string; attachments: ChatAttachment[] }) {
   chat.send(text, attachments)
 }
+
+const modeHint = computed(() => MODES.find((m) => m.value === mode.value)?.hint ?? '')
 
 function onTopic(topic: Topic) {
   draft.value = topic.prompt
@@ -84,26 +87,27 @@ useKeyboardShortcut({ key: 'Escape' }, () => {
 </script>
 
 <template>
-  <div class="flex h-dvh bg-[linear-gradient(160deg,#12306e_0%,#0b1a40_35%,#081230_100%)] md:p-3">
+  <div class="flex h-dvh bg-canvas md:p-3">
     <AppSidebar :open="sidebarOpen" @toggle="sidebarOpen = !sidebarOpen" @new-thread="startNewThread" />
 
     <main
-      class="relative flex min-w-0 flex-1 flex-col overflow-hidden border-white/5 md:rounded-3xl md:border md:shadow-2xl md:shadow-black/50"
+      class="relative flex min-w-0 flex-1 flex-col overflow-hidden border-line bg-surface md:rounded-3xl md:border md:shadow-xl md:shadow-black/5"
     >
-      <StarfieldBackground />
+      <AppBackground />
 
       <div class="relative z-10 flex h-full flex-col">
         <!-- Mobile top bar -->
         <div class="flex items-center gap-2 px-4 pt-4 md:hidden">
           <button
             type="button"
-            class="grid size-9 place-items-center rounded-lg text-slate-300 hover:bg-white/10"
+            class="grid size-9 place-items-center rounded-lg text-ink-muted hover:bg-black/5"
             aria-label="Open sidebar"
             @click="sidebarOpen = true"
           >
             <AppIcon name="menu" :size="18" />
           </button>
-          <span class="text-base font-light text-white">{{ APP_NAME }}</span>
+          <BrandLogo :size="24" />
+          <span class="text-base font-semibold text-ink">{{ APP_NAME }}</span>
         </div>
 
         <ChatMessageList v-if="hasMessages" :messages="messages" :waiting="isWaiting" @suggest="chat.send($event)" />
@@ -131,10 +135,14 @@ useKeyboardShortcut({ key: 'Escape' }, () => {
                   @submit="onSubmit"
                   @voice="enterVoiceMode"
                 />
-                <TopicChips v-if="!hasMessages" :topics="TOPICS" class="mt-5" @select="onTopic" />
-                <p v-else class="mt-2 text-center text-[11px] text-slate-500">
-                  AI answers can be inaccurate. Always check official sources.
+                <p
+                  v-if="hasMessages || mode === 'task'"
+                  class="mt-2 flex items-center justify-center gap-1.5 text-center text-[11px] text-ink-subtle"
+                >
+                  <AppIcon v-if="mode === 'task'" name="shield-check" :size="12" class="text-brand" />
+                  {{ modeHint }}
                 </p>
+                <TopicChips v-if="!hasMessages" :topics="TOPICS" class="mt-5" @select="onTopic" />
               </div>
             </Transition>
           </div>
