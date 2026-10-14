@@ -46,3 +46,17 @@ npm run build
 ```sh
 npm run lint
 ```
+
+## Deploy to Cloudflare Workers
+
+One Worker serves the built Vue app (Workers Static Assets) and `POST /api/chat` (`worker/index.ts`), so the Gemini key stays server-side and no CORS setup is needed. Config: `wrangler.jsonc`.
+
+```sh
+npx wrangler login
+npx wrangler secret put GEMINI_API_KEY   # once
+VITE_AI_ENABLED=true npm run deploy      # VITE_* vars are baked in at build time
+```
+
+Test the production setup locally: copy `.dev.vars.example` to `.dev.vars`, add your key, then run `VITE_AI_ENABLED=true npm run cf:dev`.
+
+Auto-deploy on push: Cloudflare dashboard → Workers & Pages → Create → Import a repository. Set root directory `web`, build command `npm run build`, deploy command `npx wrangler deploy`, build variable `VITE_AI_ENABLED=true`, and add `GEMINI_API_KEY` as a secret in the Worker's settings.

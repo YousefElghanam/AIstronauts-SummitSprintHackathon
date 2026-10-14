@@ -1,0 +1,3 @@
+# Secrets for `npm run cf:dev` (local Worker). Copy to .dev.vars.
+# In production set them with: npx wrangler secret put GEMINI_API_KEY
+GEMINI_API_KEY=

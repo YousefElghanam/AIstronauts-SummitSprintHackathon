@@ -37,3 +37,8 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+# Cloudflare Wrangler
+.wrangler
+.dev.vars*
+!.dev.vars.example
