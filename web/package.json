@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
+    "cf:dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "run-s \"lint:*\"",
@@ -20,6 +22,7 @@
     "vue-router": "^5.3.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261014.1",
     "@tailwindcss/vite": "^4.3.3",
     "@tsconfig/node24": "^24.0.5",
     "@types/node": "^24.13.4",
@@ -37,7 +40,8 @@
     "vite": "^8.2.2",
     "vite-plugin-vue-devtools": "^8.2.1",
     "vue-eslint-parser": "^10.4.1",
-    "vue-tsc": "^3.3.11"
+    "vue-tsc": "^3.3.11",
+    "wrangler": "^4.151.0"
   },
   "engines": {
     "node": "^22.18.0 || >=24.12.0"

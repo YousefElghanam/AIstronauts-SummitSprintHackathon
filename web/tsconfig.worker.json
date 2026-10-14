@@ -1,0 +1,14 @@
+// TSConfig for the Cloudflare Worker (worker/) that serves /api/chat in production.
+{
+  "extends": "@tsconfig/node24/tsconfig.json",
+  "include": ["worker/**/*.ts", "server/chat.ts", "server/prompt.ts"],
+  "compilerOptions": {
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "lib": ["ES2024"],
+    "types": ["@cloudflare/workers-types"],
+    "noEmit": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.worker.tsbuildinfo"
+  }
+}
