@@ -1,0 +1,38 @@
+<script setup lang="ts">
+import BrandLogo from '@/components/ui/BrandLogo.vue'
+</script>
+
+<template>
+  <div class="flex items-center gap-3" role="status" aria-live="polite">
+    <BrandLogo :size="28" class="animate-pulse" />
+    <div class="flex items-center gap-1 rounded-2xl rounded-bl-md border border-white/10 bg-white/5 px-4 py-3">
+      <span v-for="i in 3" :key="i" class="dot size-1.5 rounded-full bg-blue-300" :style="{ animationDelay: `${(i - 1) * 0.15}s` }" />
+    </div>
+    <span class="text-xs text-slate-500">Thinking…</span>
+  </div>
+</template>
+
+<style scoped>
+.dot {
+  animation: typing-bounce 1s ease-in-out infinite;
+}
+
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    animation: none;
+  }
+}
+</style>
